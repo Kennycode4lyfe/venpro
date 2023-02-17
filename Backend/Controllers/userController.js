@@ -76,10 +76,11 @@ async function getAllUsers(req,res,next){
              }
 
              async function verifyUser(req,res,next){
-                const userEmail = req.body.email
+                const userRef = req.params.index
+                
                 
                  try{
-                const user = await User.update({email_verified:true},{where:{email:userEmail}})
+                const user = await User.update({email_verified:true},{where:{ref:userRef}})
                 
                  res.redirect('/home')
                  }

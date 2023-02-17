@@ -7,11 +7,12 @@
     <title>Books</title>
   </head>
   <body>
-    <% if (user) { %>
+    <% if (user&&ref) { %>
         <p>
             Welcome <%= user.first_name %>
         </p>
+       
+        <P>click <a href=`http://localhost:3000/user/${ref}`>here</a> to verify your email</P>
         <% } %>
-        <P>click <a href="/user/index">here</a> to verify your email</P>
   </body>
 </html>
