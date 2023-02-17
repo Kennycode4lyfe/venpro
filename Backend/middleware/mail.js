@@ -1,8 +1,11 @@
 const nodemailer = require('nodemailer')
+const ejs = require('ejs')
+const path = require("path");
+
 require('dotenv').config()
-
-
 const pass = process.env.GM_PASS
+
+
 module.exports= async(req,res,next)=>{
 let transporter = await nodemailer.createTransport({service:'gmail',
 auth:{
@@ -10,17 +13,9 @@ auth:{
     pass:pass
 }})
 
-const output = `
-<p>You have a new contact request</p>
-<h3>Contact Details</h3>
-<ul>  
-  <li>Name: ${req.body.first_name}</li>
-  <li>Company: ${req.body.last_name}</li>
-</ul>
-<h3>Message</h3>
-<p>Welcome to venpro</p>
-`;
+const templatePath = path.join("/","Users","HP","Desktop","venpro", "Backend", "views", "welcome.ejs")
 
+const output =await ejs.renderFile(templatePath, { user: req.body })
 
 let mailOptions = {
     from: '"Adediran Kehinde" <kennydemola2@gmail.com>',
@@ -37,6 +32,5 @@ await transporter.sendMail(mailOptions,(err,info)=>{
     }
     next()
 })
-
 }
 

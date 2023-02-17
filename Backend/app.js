@@ -3,11 +3,22 @@ require('dotenv').config()
 const { requiresAuth } = require('express-openid-connect');
 const bodyParser = require('body-parser')
 const userRouter = require('./Routes/userRoute')
+const middleWare = require('./auth')
 const PORT = process.PORT || 3000
 
 const app = express()
-const middleWare = require('./auth')
+
+//set view engine
+app.set('views', 'views');
+app.set('view engine', 'ejs');
+
 app.use(bodyParser.urlencoded({extended:false}))
+app.use(bodyParser.json());
+
+app.use(express.static('public'));
+
+
+
 app.use(middleWare)
 app.use('/user',userRouter)
 

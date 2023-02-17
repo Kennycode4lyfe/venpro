@@ -22,7 +22,10 @@ email:{
     allowNull:false,
     unique:true
 },
-
+email_verified:{
+    type:DataTypes.BOOLEAN,
+    defaultValue:false
+},
 password:{
 type:DataTypes.STRING,
 allowNull:false,

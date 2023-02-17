@@ -10,6 +10,7 @@ userInfo = req.body
 try{
 const user = await User.create({...userInfo,ref})
 res.status(201).json(user)
+next()
 }
 catch(err){
     console.log(err)
@@ -74,6 +75,20 @@ async function getAllUsers(req,res,next){
              }
              }
 
+             async function verifyUser(req,res,next){
+                const userEmail = req.body.email
+                
+                 try{
+                const user = await User.update({email_verified:true},{where:{email:userEmail}})
+                
+                 res.redirect('/home')
+                 }
+                 catch(err){
+                     console.log(err)
+                     next(err)
+                 }
+                 }
+
 
 
 
@@ -81,5 +96,7 @@ module.exports ={
     addUser,
     getAllUsers,
     getUserById,
+    updateUser,
     deleteUser,
+    verifyUser
 }
