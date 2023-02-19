@@ -4,6 +4,7 @@ const { requiresAuth } = require('express-openid-connect');
 const bodyParser = require('body-parser')
 const userRouter = require('./Routes/userRoute')
 const middleWare = require('./auth')
+const path = require('path')
 const PORT = process.PORT || 3000
 
 const app = express()
@@ -15,7 +16,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended:false}))
 app.use(bodyParser.json());
 
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname,'public')));
 
 
 
@@ -43,6 +44,9 @@ app.get('/home', (req, res) => {
 })
 
 app.use((err,req,res,next)=>{
+  if(err.parent.errno===1062){
+   return res.send('duplicate entry')
+  }
 res.status(500).send('something broke')
 })
 

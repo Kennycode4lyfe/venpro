@@ -4,15 +4,28 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Books</title>
+    <link rel="stylesheet" type="text/css" href="../practice.css">
+    <title>Venpro verification</title>
+   
   </head>
-  <body>
+  
+  <body style="position: relative;">
+    <div class="container" style="position: absolute;top: 50%;left: 50%; transform: translate(-50%,-50%);">
+    <h1>Confirm Your Email Address</h1><br>
+    
     <% if (user&&ref) { %>
         <p>
-            Welcome <%= user.first_name %>
+            Hey <%= user.first_name %>,
         </p>
-       
-        <P>click <a href=`http://localhost:3000/user/${ref}`>here</a> to verify your email</P>
+       <p>Thanks for creating an account with venpro. </p>
+       <p>Before we get started ,we'll need to verify your email.</p>
+       <p>Click the button below to verify your email</p>
+        <button class="btn" style="background-color:rgb(124, 124, 252);
+        color: whitesmoke;
+        border: none;
+        padding: 8px;
+        border-radius: 8px;"><a href=`http://localhost:3000/user/<%=ref%>` style="color: whitesmoke;text-decoration:none">Verify Email</a></button>
         <% } %>
+      </div>
   </body>
 </html>

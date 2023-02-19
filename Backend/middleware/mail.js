@@ -1,42 +1,53 @@
-const nodemailer = require('nodemailer')
-const ejs = require('ejs')
+const nodemailer = require("nodemailer");
+const ejs = require("ejs");
 const path = require("path");
-const db = require('../models')
-const User = db.users
+const db = require("../models");
+const User = db.users;
 
-require('dotenv').config()
-const pass = process.env.GM_PASS
+require("dotenv").config();
+const pass = process.env.GM_PASS;
 
+module.exports = async (req, res, next) => {
+  const indexUser = await User.findOne({ email: req.body.email });
+  const userRef = indexUser.ref;
+  console.log(userRef)
+  let transporter = await nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "kennydemola2@gmail.com",
+      pass: pass,
+    },
+  });
 
-module.exports= async(req,res,next)=>{
+  const templatePath = path.join(
+    "/",
+    "Users",
+    "HP",
+    "Desktop",
+    "venpro",
+    "Backend",
+    "views",
+    "welcome.ejs"
+  );
 
-    const indexUser = await User.findOne({email:req.body.email})
-    const userRef = indexUser.ref
-let transporter = await nodemailer.createTransport({service:'gmail',
-auth:{
-    user:'kennydemola2@gmail.com',
-    pass:pass
-}})
+  const output = await ejs.renderFile(templatePath, {
+    user: req.body,
+    ref: userRef,
+  });
 
-
-const templatePath = path.join("/","Users","HP","Desktop","venpro", "Backend", "views", "welcome.ejs")
-
-const output =await ejs.renderFile(templatePath, { user: req.body,ref:userRef })
-
-let mailOptions = {
-    from: '"Adediran Kehinde" <kennydemola2@gmail.com>',
+  let mailOptions = {
+    from: '"Venpro" <kennydemola2@gmail.com>',
     to: req.body.email,
-    subject: 'verify your email',
-    text:`This is your one time password 7634` ,
-    html:output
-}
+    subject: "verify your email",
+    text: `This is your one time password 7634`,
+    html: output,
+  };
 
-await transporter.sendMail(mailOptions,(err,info)=>{
-    if(err){
-    console.log(err)
-    return err
+  await transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      console.log(err);
+      return err;
     }
-    next()
-})
-}
-
+    next();
+  });
+};
