@@ -9,6 +9,7 @@ const PORT = process.PORT || 3000
 
 const app = express()
 
+require('./middleware/passport')
 //set view engine
 app.set('views', 'views');
 app.set('view engine', 'ejs');
@@ -44,10 +45,11 @@ app.get('/home', (req, res) => {
 })
 
 app.use((err,req,res,next)=>{
-  if(err.parent.errno===1062){
+  if(err.parent.errno && err.parent.errno===1062){
    return res.send('duplicate entry')
   }
-res.status(500).send('something broke')
+
+ else return res.status(500).send('something broke')
 })
 
 app.listen(PORT,()=>{

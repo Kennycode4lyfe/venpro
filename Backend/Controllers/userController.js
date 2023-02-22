@@ -14,16 +14,19 @@ api_secret:process.env.CLOUDINARY_API_SECRET
 
 const User = db.users;
 
-async function addUser(req, res, next) {
-    // const userEmail = User.findOne({where:{email:req.body.email}})
-    // if(userEmail){
-    //     res.send("user already exist")
-    // }
+async function signup(req, res, next) {
   const ref = ranString.generate(10);
-  userInfo = req.body;
+  const user = await User.findOne({where:{username: req.user.username}})
+  const passedUserDetails = req.user
+
   try {
-    const user = await User.create({ ...userInfo, ref });
-    res.status(201).json(user);
+   const updatedUser = await User.update({ref:ref},{where:{
+     username:user.username 
+    }})
+    passedUserDetails.ref = updateUser.ref
+    delete passedUserDetails.password
+    console.log(passedUserDetails)
+    res.status(201).json(passedUserDetails);
     next();
   } catch (err) {
     console.log(err);
@@ -134,7 +137,7 @@ async function changePassword(req, res, next) {
   }
 
 module.exports = {
-  addUser,
+  signup,
   getAllUsers,
   getUserById,
   updateUser,

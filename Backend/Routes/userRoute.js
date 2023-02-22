@@ -1,11 +1,15 @@
 const express = require("express");
 const userController = require("../Controllers/userController");
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
 const mail = require("../middleware/mail");
 const userRouter = express.Router();
 const multer = require('multer')
 const upload = multer({ dest:"../public/uploads" })
 
-userRouter.post("/", userController.addUser, mail);
+
+
+userRouter.post("/signup",passport.authenticate('signup', { session: false }), userController.signup, mail);
 userRouter.get("/", userController.getAllUsers);
 userRouter.get("/index/:id", userController.getUserById);
 userRouter.get("/:index", userController.verifyUser);
