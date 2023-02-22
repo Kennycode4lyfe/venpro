@@ -34,6 +34,7 @@ passport.use(
         {
             usernameField: 'username',
             passwordField: 'password'
+            // passReqToCallback: true
         },
         async (username, password, done) => {
             try {
