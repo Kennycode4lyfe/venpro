@@ -49,7 +49,7 @@ User.beforeCreate(async (user, options) => {
   const hashedPassword = await bcrypt.hash(user.password,10);
   user.password = hashedPassword;
 });
-User.prototype.isValidated = async function(password){
+User.prototype.isValidPassword = async function(password){
     const user = this
     const compare = await bcrypt.compare(password,user.password)
 
