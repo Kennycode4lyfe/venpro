@@ -15,6 +15,7 @@ passport.use(
         },
         async (token, done) => {
             try {
+                console.log(token.user)
                 return done(null, token.user);
             } catch (error) {
                 done(error);
@@ -81,7 +82,7 @@ passport.use(
 
                 return done(null, user, { message: 'Logged in Successfully' });
             } catch (error) {
-                return done(error);
+                return done(error);0
             }
         }
     )

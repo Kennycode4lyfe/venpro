@@ -17,6 +17,6 @@ userRouter.get("/", userController.getAllUsers);
 userRouter.get("/index/:id", userController.getUserById);
 userRouter.get("/:index", userController.verifyUser);
 userRouter.get("/index", userController.changePassword)
-userRouter.post("/index/profile-picture",upload.single('avatar'), userController.uploadImage)
+userRouter.post("/index/profile-picture",passport.authenticate('jwt',{session:false}),upload.single('avatar'), userController.uploadImage)
 
 module.exports = userRouter;
