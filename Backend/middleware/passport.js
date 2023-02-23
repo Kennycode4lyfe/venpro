@@ -66,15 +66,15 @@ passport.use(
         },
         async (req, username, password, done) => {
             try {
-                const user = await UserModel.findOne({ username });
-
+                const user = await UserModel.findOne({where:{username:username} });
+                // console.log(user)
 
                 if (!user) {
                     return done(null, false, { message: 'User not found' });
                 }
 
                 const validate = await user.isValidPassword(password);
-
+                // console.log(validate)
                 if (!validate) {
                     return done(null, false, { message: 'Wrong Password' });
                 }

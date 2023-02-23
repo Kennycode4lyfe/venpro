@@ -2,7 +2,7 @@ const db = require("../models");
 const ranString = require("randomstring");
 const fs = require("fs")
 const cloudinary = require('cloudinary').v2
-
+const jwt = require('jsonwebtoken');
 require('dotenv').config
 
 cloudinary.config({
@@ -32,7 +32,37 @@ async function signup(req, res, next) {
     console.log(err);
     next(err);
   }
+
 }
+
+  async function login(req, res, {err,user,info}) {
+    try {
+      if (err) {
+          return next(err);
+      }
+      if (!user) {
+          const error = new Error('Username or password is incorrect');
+          return next(error);
+      }
+
+      req.login(user, { session: false },
+          async (error) => {
+              if (error) return next(error);
+
+              const body = { _id: user._id, username: user.username };
+              //You store the id and username in the payload of the JWT. 
+              // You then sign the token with a secret or key (JWT_SECRET), and send back the token to the user.
+              // DO NOT STORE PASSWORDS IN THE JWT!
+              const token = jwt.sign({ user: body }, process.env.JWT_SECRET || 'something_secret');
+
+              return res.json({ token });
+          }
+      );
+  } catch (error) {
+      return next(error);
+  }
+  }
+
 
 async function getAllUsers(req, res, next) {
   const userInfo = req.body;
@@ -138,6 +168,7 @@ async function changePassword(req, res, next) {
 
 module.exports = {
   signup,
+  login,
   getAllUsers,
   getUserById,
   updateUser,

@@ -45,13 +45,12 @@ app.get('/home', (req, res) => {
 })
 
 app.use((err,req,res,next)=>{
-  if(err.parent.errno && err.parent.errno===1062){
-   return res.send('duplicate entry')
-  }
+  // if(err.parent.errno && err.parent.errno===1062 &&){
+  //  return res.send('duplicate entry')
+  // }
 
- else return res.status(500).send('something broke')
+  res.status(500).send('something broke')
 })
-
 app.listen(PORT,()=>{
     console.log(`app listening on port ${PORT}`)
 })
