@@ -152,11 +152,14 @@ async function changePassword(req, res, next) {
   }
 
   async function uploadImage(req, res, token) {
-    console.log(token)
+    const userProfile = token.username
     // console.log(req.file)
     const filePath = req.file.path
     try{
-    const cloudinaryResponse = await cloudinary.uploader.upload(filePath)
+    const cloudinaryResponse = await cloudinary.uploader.upload(filePath,{
+      folder:"venpro",
+      public_id: userProfile
+    })
 
     fs.unlink(filePath,(err)=>{
       if(err) return
