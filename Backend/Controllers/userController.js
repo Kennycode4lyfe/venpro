@@ -151,9 +151,11 @@ async function changePassword(req, res, next) {
     }
   }
 
-  async function uploadImage(req, res, next) {
-    console.log(req.file)
+  async function uploadImage(req, res, token) {
+    console.log(token)
+    // console.log(req.file)
     const filePath = req.file.path
+    try{
     const cloudinaryResponse = await cloudinary.uploader.upload(filePath)
 
     fs.unlink(filePath,(err)=>{
@@ -164,6 +166,10 @@ async function changePassword(req, res, next) {
       status:true,
       url: cloudinaryResponse.url
     })
+  }
+  catch(err){
+    next(err)
+  }
   }
 
 module.exports = {
