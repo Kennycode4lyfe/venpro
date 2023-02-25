@@ -40,7 +40,12 @@ ref:{
     type:DataTypes.STRING,
     allowNull:true,
     unique:true
+},
+image:{
+    type:DataTypes.STRING,
+    unique:true
 }
+
 },{
     tableName:'Users'
 })

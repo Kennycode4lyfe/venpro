@@ -164,6 +164,10 @@ async function changePassword(req, res, next) {
     fs.unlink(filePath,(err)=>{
       if(err) return
     })
+
+    await User.update({image:cloudinaryResponse.url},{where:{
+      username:userProfile
+    }})
     return res.status(200).json({
       message:'File uploaded successfully',
       status:true,
