@@ -40,24 +40,24 @@ module.exports = (sequelize,DataTypes)=>{
     delivery_fee:{
         type:DataTypes.INTEGER
 },
-// cart_id:{
-//     type:DataTypes.CHAR(36),
-//     references:{
-//         model:'Carts',
-//         key:'id'
-//     }
-// },
+cart_id:{
+    type:DataTypes.CHAR(36),
+    references:{
+        model:'Carts',
+        key:'id'
+    }
+},
 status:{
     type:DataTypes.ENUM,
     values:['processing','shipped','cancelled']
 },
-// user_id:{
-//     type:DataTypes.CHAR(36),
-//     references:{
-//         model:'Users',
-//         key:'id'
-//     }
-// }
+user_id:{
+    type:DataTypes.CHAR(36),
+    references:{
+        model:'Users',
+        key:'id'
+    }
+}
     },
     {
         tableName:'Orders'

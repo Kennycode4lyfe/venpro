@@ -14,14 +14,14 @@
                 defaultValue:0
             },
            
-            // user_id:{
-            //     type:DataTypes.CHAR(36),
-            //     foreignKey:true,
-            //     references:{
-            //         model:'users',
-            //         key:'id'
-            //     }
-            // }
+            user_id:{
+                type:DataTypes.CHAR(36),
+                foreignKey:true,
+                references:{
+                    model:'users',
+                    key:'id'
+                }
+            }
     
     
         },
@@ -49,27 +49,27 @@
                     type:DataTypes.ENUM,
                     values:['bank_transfer','debit_card','wallet']
                 },
-                // order_id:{
-                //     type:DataTypes.CHAR(36),
-                //     references:{
-                //         model:'Orders',
-                //         key:'id'
-                //     }
-                // },
-                // wallet_id:{
-                //     type:DataTypes.CHAR(36),
-                //     references:{
-                //         model:'Wallets',
-                //         key:'id'
-                //     }
-                // },
-                // user_id:{
-                //     type:DataTypes.CHAR(36),
-                //     references:{
-                //         model:'Users',
-                //         key:'id'
-                //     }
-                // }
+                order_id:{
+                    type:DataTypes.CHAR(36),
+                    references:{
+                        model:'Orders',
+                        key:'id'
+                    }
+                },
+                wallet_id:{
+                    type:DataTypes.CHAR(36),
+                    references:{
+                        model:'Wallets',
+                        key:'id'
+                    }
+                },
+                user_id:{
+                    type:DataTypes.CHAR(36),
+                    references:{
+                        model:'Users',
+                        key:'id'
+                    }
+                }
         
         
             },

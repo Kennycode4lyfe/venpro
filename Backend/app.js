@@ -3,6 +3,7 @@ require('dotenv').config()
 const { requiresAuth } = require('express-openid-connect');
 const bodyParser = require('body-parser')
 const userRouter = require('./Routes/userRoute')
+const pharmRouter = require('./Routes/pharmaRoute')
 const middleWare = require('./auth')
 const path = require('path')
 const PORT = process.PORT || 3000
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname,'public')));
 
 app.use(middleWare)
 app.use('/user',userRouter)
+app.use('/pharm',pharmRouter)
 
 
 

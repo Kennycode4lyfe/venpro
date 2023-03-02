@@ -26,11 +26,6 @@ module.exports = (sequelize,DataTypes)=>{
         allowNull:false,
         unique:true
     },
-    // user_id:{
-    //     type:DataTypes.CHAR(36),
-    //    references:{ model: 'Users',
-    //     key: 'id'}
-    // },
     subscription_status:{
         type:DataTypes.ENUM,
         values:['monthly','quarterly','yearly']

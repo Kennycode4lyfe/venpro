@@ -36,13 +36,13 @@ return Cart
 
     const Cart_Products = sequelize.define('Cart_product',
         {
-            // product_id:{
-            //     type: DataTypes.CHAR(36),
-            //     references:{
-            //         model:'Products',
-            //         key:'id'
-            //     }
-            // },
+            product_id:{
+                type: DataTypes.CHAR(36),
+                references:{
+                    model:'Products',
+                    key:'id'
+                }
+            },
             purchased:{
                 type:DataTypes.BOOLEAN,
                 defaultValue:false
@@ -50,13 +50,13 @@ return Cart
             total:{
                 type:DataTypes.INTEGER
             },
-            // cart_id:{
-            //     type:DataTypes.CHAR(36),
-            //     references:{
-            //         model:'Carts',
-            //         key:'id'
-            //     }
-            // }
+            cart_id:{
+                type:DataTypes.CHAR(36),
+                references:{
+                    model:'Carts',
+                    key:'id'
+                }
+            }
     
     
         },

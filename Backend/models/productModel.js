@@ -15,15 +15,15 @@ function Product(sequelize,DataTypes){
         type:DataTypes.STRING,
         allowNull:false
     },
-    // drug_class:{
-    //     type:DataTypes.CHAR(36),
-    //     default: DataTypes.UUIDV4,
-    //     foreignKey: true,        
-    //     references:{
-    //         model: 'drug_class',
-    //         key:'id'
-    //     }   
-    // },
+    drug_class:{
+        type:DataTypes.CHAR(36),
+        default: DataTypes.UUIDV4,
+        foreignKey: true,        
+        references:{
+            model: 'drug_class',
+            key:'id'
+        }   
+    },
 
     drug_price:{
     type:DataTypes.INTEGER,
