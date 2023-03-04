@@ -24,7 +24,7 @@ app.use(express.static(path.join(__dirname,'public')));
 
 app.use(middleWare)
 app.use('/user',userRouter)
-app.use('/pharm',pharmRouter)
+app.use('/pharmacy',pharmRouter)
 
 
 

@@ -81,18 +81,18 @@ db.cartProducts.belongsTo(db.products)
 db.users.hasOne(db.pharmacy
     ,{foreignKey:{
     name:'user_id',
-    allowNull:false,
+    allowNull:true,
     type:DataTypes.CHAR(36)
 }}
 )
 db.pharmacy.belongsTo(db.users,{foreignKey:{
     name:'user_id',
-    allowNull:false,
+    allowNull:true,
     type:DataTypes.CHAR(36)
 }})
 
-db.products.belongsToMany(db.pharmacy, { through: db.pharmProducts });
-db.pharmacy.belongsToMany(db.products, { through: db.pharmProducts });
+// db.products.belongsToMany(db.pharmacy, { through: db.pharmProducts });
+// db.pharmacy.belongsToMany(db.products, { through: db.pharmProducts });
 
 
 module.exports = db;

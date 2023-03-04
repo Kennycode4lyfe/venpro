@@ -3,19 +3,10 @@ const { DataTypes } = require("sequelize");
 module.exports = (sequelize,DataTypes)=>{
 const pharmProducts = sequelize.define('Pharm_products', {
     PharmId: {
-      type: DataTypes.CHAR(36),
-      references: {
-        model: 'Pharmacies', 
-        key: 'id'
-      }
+      type: DataTypes.CHAR(36)
     },
     ProductId: {
-      type: DataTypes.CHAR(36),
-      references: {
-        model: 
-        'Products', 
-        key: 'id'
-      }
+      type: DataTypes.CHAR(36)
     }
   });
 

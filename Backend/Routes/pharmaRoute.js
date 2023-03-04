@@ -4,9 +4,26 @@ const passport = require('passport');
 const pharmaRouter = express.Router();
 
 
-pharmaRouter.post('/pharmacy', async (req, res, next) => passport.authenticate('jwt', (err, token) => {
+pharmaRouter.post('/', async (req, res, next) => passport.authenticate('jwt', (err, token) => {
     pharmaController.createPharmacy(req, res, token)
 })(req, res, next))
 
+pharmaRouter.delete('/', async (req, res, next) => passport.authenticate('jwt', (err, token) => {
+    pharmaController.deletePharmacy(req, res, token)
+})(req, res, next))
+
+pharmaRouter.put('/', async (req, res, next) => passport.authenticate('jwt', (err, token) => {
+    pharmaController.updatePharmacy(req, res, token)
+})(req, res, next))
+
+pharmaRouter.get('/',pharmaController.getAllPharmacies)
+
+pharmaRouter.post('/product', async (req, res, next) => passport.authenticate('jwt', (err, token) => {
+    pharmaController.uploadProducts(req, res, token)
+})(req, res, next))
+
+pharmaRouter.delete('/product', async (req, res, next) => passport.authenticate('jwt', (err, token) => {
+    pharmaController.deleteProducts(req, res, token)
+})(req, res, next))
 
 module.exports = pharmaRouter
