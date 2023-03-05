@@ -57,44 +57,64 @@ async function deletePharmacy(req, res, token) {
   }
 }
 
-
-async function uploadProducts(req, res, token) {
+async function addProducts(req, res, token) {
   const user = token.username;
   const userDetails = await userModel.findOne({ where: { username: user } });
   try {
     const productDetails = req.body;
-    const uploadedProduct = await productModel.create(productDetails)
+
     const userPharmacy = await pharmaModel.findOne({
       where: { user_id: userDetails.id },
     });
-    console.log(userPharmacy.id)
-    console.log(uploadedProduct.id)
-    const pharmproduct = await pharmProductModel.create({
-      PharmId: userPharmacy.id,
-      ProductId: uploadedProduct.id
-    })
-    
+
+    const pharmproduct = await productModel.create(productDetails);
+    await userPharmacy.addProduct(pharmproduct.id);
     res.status(200).json(pharmproduct);
   } catch (err) {
     console.log(err);
   }
 }
 
-async function deleteProducts(req, res, token) {
+
+
+async function getProducts(req, res, token) {
   const user = token.username;
   const userDetails = await userModel.findOne({ where: { username: user } });
   try {
-
-    const userPharmacy = await pharmaModel.findOne({
+    const userPharmacyProducts = await pharmaModel.findOne({
       where: { user_id: userDetails.id },
+      include: {
+        model: productModel
+      },
     });
-    
-    const pharmProduct = await pharmProductModel.findOne({where:{PharmId:userPharmacy.id}})
-    console.log(pharmProduct)
-    
-    
-    
-    res.status(200).json(pharmProduct);
+
+    const products = userPharmacyProducts.Products;
+    console.log(products);
+  
+    res.status(200).json({ Products:products});
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+
+async function deleteProducts(req, res, token) {
+  const user = token.username;
+  const deleteQuery = req.query;
+  const userDetails = await userModel.findOne({ where: { username: user } });
+  try {
+    const userPharmacyProducts = await pharmaModel.findOne({
+      where: { user_id: userDetails.id },
+      include: {
+        model: productModel,
+        where: deleteQuery
+      },
+    });
+    const productId = userPharmacyProducts.Products[0].id;
+    console.log(productId);
+    await productModel.destroy({ where: { id: productId } })
+    await pharmProductModel.destroy({ where: { product_id: productId } });
+    res.status(200).json({ message: "product deleted" });
   } catch (err) {
     console.log(err);
   }
@@ -105,6 +125,7 @@ module.exports = {
   getAllPharmacies,
   updatePharmacy,
   deletePharmacy,
-  uploadProducts,
-  deleteProducts
+  addProducts,
+  getProducts,
+  deleteProducts,
 };

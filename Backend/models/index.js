@@ -90,9 +90,12 @@ db.pharmacy.belongsTo(db.users,{foreignKey:{
     allowNull:true,
     type:DataTypes.CHAR(36)
 }})
+db.pharmacy.belongsToMany(db.products, { through: 'pharm_products',
+foreignKey:"pharmacy_id" });
 
-// db.products.belongsToMany(db.pharmacy, { through: db.pharmProducts });
-// db.pharmacy.belongsToMany(db.products, { through: db.pharmProducts });
+db.products.belongsToMany(db.pharmacy, { through: 'pharm_products' ,
+foreignKey:"product_id"});
+
 
 
 module.exports = db;

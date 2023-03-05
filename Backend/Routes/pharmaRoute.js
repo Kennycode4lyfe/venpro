@@ -19,7 +19,11 @@ pharmaRouter.put('/', async (req, res, next) => passport.authenticate('jwt', (er
 pharmaRouter.get('/',pharmaController.getAllPharmacies)
 
 pharmaRouter.post('/product', async (req, res, next) => passport.authenticate('jwt', (err, token) => {
-    pharmaController.uploadProducts(req, res, token)
+    pharmaController.addProducts(req, res, token)
+})(req, res, next))
+
+pharmaRouter.get('/product', async (req, res, next) => passport.authenticate('jwt', (err, token) => {
+    pharmaController.getProducts(req, res, token)
 })(req, res, next))
 
 pharmaRouter.delete('/product', async (req, res, next) => passport.authenticate('jwt', (err, token) => {
