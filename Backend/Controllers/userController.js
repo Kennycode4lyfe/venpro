@@ -2,6 +2,8 @@ const db = require("../models");
 const ranString = require("randomstring");
 const fs = require("fs")
 const cloudinary = require('cloudinary').v2
+const User = db.users;
+const wallet = db.wallet
 const jwt = require('jsonwebtoken');
 require('dotenv').config
 
@@ -12,7 +14,7 @@ api_secret:process.env.CLOUDINARY_API_SECRET
 })
 
 
-const User = db.users;
+
 
 async function signup(req, res, next) {
   const ref = ranString.generate(10);
@@ -23,6 +25,9 @@ async function signup(req, res, next) {
    const updatedUser = await User.update({ref:ref},{where:{
      username:user.username 
     }})
+    
+    // const userWallet = await wallet.create({user_id:updatedUser.id})
+  //  console.log(userWallet)
     passedUserDetails.ref = updateUser.ref
     delete passedUserDetails.password
     console.log(passedUserDetails)

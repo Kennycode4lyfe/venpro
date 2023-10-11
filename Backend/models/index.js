@@ -33,14 +33,51 @@ db.Cart = require('./cartModel').Cart(sequelize,DataTypes)
 db.orders = require('./orderModel')(sequelize,DataTypes)
 db.wallet = require('./walletModel').Wallet(sequelize,DataTypes)
 db.walletTransaction = require('./walletModel').walletTransaction(sequelize,DataTypes)
-
-
-
-
-
-
-
 db.pharmProducts = require('./pharmaProducts')(sequelize,DataTypes)
+
+
+
+// User and Pharmacy: One-to-One
+db.users.hasOne(db.pharmacy);
+db.pharmacy.belongsTo(db.users);
+
+// Product and Drug Class: One-to-Many
+db.drugClass.hasMany(db.products);
+db.products.belongsTo(db.drugClass);
+
+// User and Cart: One-to-One
+db.users.hasOne(db.Cart);
+db.Cart.belongsTo(db.users);
+
+// User and Wallet: One-to-One
+db.users.hasOne(db.wallet,{foreignKey:'user_id'});
+db.wallet.belongsTo(db.users,{foreignKey:'user_id'});
+
+// User and Wallet Transaction: One-to-Many
+db.users.hasMany(db.walletTransaction);
+db.walletTransaction.belongsTo(db.users);
+
+// Wallet and Wallet Transaction: One-to-Many
+db.wallet.hasMany(db.walletTransaction);
+db.walletTransaction.belongsTo(db.wallet);
+
+// User and Order: One-to-Many
+db.users.hasMany(db.orders);
+db.orders.belongsTo(db.users);
+
+// Order and Products: Many-to-Many
+db.orders.belongsToMany(db.products, { through: 'OrderProducts' });
+db.products.belongsToMany(db.orders, { through: 'OrderProducts' });
+
+// Product and Pharmacy: Many-to-Many
+db.products.belongsToMany(db.pharmacy, { through: 'Pharm_products' });
+db.pharmacy.belongsToMany(db.products, { through: 'Pharm_products' });
+
+// Cart and Product: Many-to-Many
+db.Cart.belongsToMany(db.products, { through: 'Cart_product' });
+db.products.belongsToMany(db.Cart, { through: 'Cart_product' });
+
+
 // sync all models
 // force: false will not drop the table if it already exists
 db.sequelize.sync({ force: false })
@@ -49,52 +86,6 @@ db.sequelize.sync({ force: false })
     }).catch(err => {
         console.error('Unable to sync database & tables:', err);
     })
-
-//Add many-to-many relationship between authors and books using a through table called BookAuthors
-db.users.hasOne(db.Cart)
-db.Cart.belongsTo(db.users)
-
-db.users.hasOne(db.wallet)
-db.wallet.belongsTo(db.users)
-
-db.wallet.hasMany(db.walletTransaction)
-db.walletTransaction.belongsTo(db.wallet)
-
-db.users.hasMany(db.walletTransaction)
-db.walletTransaction.belongsTo(db.users)
-
-db.walletTransaction.hasOne(db.orders)
-db.orders.belongsTo(db.walletTransaction)
-
-db.users.hasMany(db.orders)
-db.orders.belongsTo(db.users)
-
-db.Cart.hasMany(db.orders)
-db.orders.belongsTo(db.Cart)
-
-db.Cart.hasMany(db.cartProducts)
-db.cartProducts.belongsTo(db.Cart)
-
-db.products.hasMany(db.cartProducts)
-db.cartProducts.belongsTo(db.products)
-
-db.users.hasOne(db.pharmacy
-    ,{foreignKey:{
-    name:'user_id',
-    allowNull:true,
-    type:DataTypes.CHAR(36)
-}}
-)
-db.pharmacy.belongsTo(db.users,{foreignKey:{
-    name:'user_id',
-    allowNull:true,
-    type:DataTypes.CHAR(36)
-}})
-db.pharmacy.belongsToMany(db.products, { through: 'pharm_products',
-foreignKey:"pharmacy_id" });
-
-db.products.belongsToMany(db.pharmacy, { through: 'pharm_products' ,
-foreignKey:"product_id"});
 
 
 

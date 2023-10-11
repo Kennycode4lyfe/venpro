@@ -1,7 +1,7 @@
 const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 const UserModel = require('../models/index').users
-
+const walletModel = require('../models/index').wallet
 const JWTstrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
 
@@ -43,8 +43,11 @@ passport.use(
                let first_name = req.body.first_name
               let  last_name = req.body.last_name
               let  email = req.body.email
-                const user = await UserModel.create({ first_name,last_name, username, password,email });
-
+                const user = await UserModel.create({ first_name,last_name, username, password,email }
+            ).then(async(user)=>{
+                console.log(user)
+                await walletModel.create({user_id:user.id})
+            })
                 return done(null, user, { message: 'User created successfully'});
             } catch (error) {
                 console.log(error)
@@ -82,7 +85,7 @@ passport.use(
 
                 return done(null, user, { message: 'Logged in Successfully' });
             } catch (error) {
-                return done(error);0
+                return done(error);
             }
         }
     )
