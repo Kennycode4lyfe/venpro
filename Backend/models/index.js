@@ -46,8 +46,8 @@ db.drugClass.hasMany(db.products);
 db.products.belongsTo(db.drugClass);
 
 // User and Cart: One-to-One
-db.users.hasOne(db.Cart);
-db.Cart.belongsTo(db.users);
+db.users.hasOne(db.Cart,{foreignKey:'user_id'});
+db.Cart.belongsTo(db.users,{foreignKey:'user_id'});
 
 // User and Wallet: One-to-One
 db.users.hasOne(db.wallet,{foreignKey:'user_id'});

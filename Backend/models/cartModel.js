@@ -15,13 +15,13 @@ const Cart = sequelize.define('Cart',
         total:{
             type:DataTypes.INTEGER
         },
-        // user_id:{
-        //     type:DataTypes.CHAR(36),
-        //     references:{
-        //         model:'Users',
-        //         key:'id'
-        //     }
-        // }
+        user_id:{
+            type:DataTypes.CHAR(36),
+            references:{
+                model:'Users',
+                key:'id'
+            }
+        }
 
 
     },

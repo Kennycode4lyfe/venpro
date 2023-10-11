@@ -2,6 +2,7 @@ const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 const UserModel = require('../models/index').users
 const walletModel = require('../models/index').wallet
+const cartModel = require('../models/index').Cart
 const JWTstrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
 
@@ -47,6 +48,7 @@ passport.use(
             ).then(async(user)=>{
                 console.log(user)
                 await walletModel.create({user_id:user.id})
+                await cartModel.create({user_id:user.id})
             })
                 return done(null, user, { message: 'User created successfully'});
             } catch (error) {
