@@ -80,7 +80,7 @@ db.products.belongsToMany(db.Cart, { through: 'Cart_product' });
 
 // sync all models
 // force: false will not drop the table if it already exists
-db.sequelize.sync({ force: true })
+db.sequelize.sync({ force: false })
     .then(() => {
         console.log('Database & tables synced');
     }).catch(err => {
