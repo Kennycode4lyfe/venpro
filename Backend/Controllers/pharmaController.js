@@ -5,6 +5,7 @@ const pharmProductModel = require("../models/index").pharmProducts;
 
 async function createPharmacy(req, res, token) {
   const pharmaPayload = req.body;
+  console.log(token)
   const user = token.username;
   try {
     const userDetails = await userModel.findOne({ where: { username: user } });

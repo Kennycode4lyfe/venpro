@@ -4,7 +4,7 @@ const { requiresAuth } = require('express-openid-connect');
 const bodyParser = require('body-parser')
 const userRouter = require('./Routes/userRoute')
 const pharmRouter = require('./Routes/pharmaRoute')
-const middleWare = require('./auth')
+// const middleWare = require('./auth')
 const path = require('path')
 const PORT = process.env.PORT || 3000
 
@@ -22,23 +22,23 @@ app.use(express.static(path.join(__dirname,'public')));
 
 
 
-app.use(middleWare)
+// app.use(middleWare)
 app.use('/user',userRouter)
 app.use('/pharmacy',pharmRouter)
 
 
 
-// req.isAuthenticated is provided from the auth router
-app.get('/', (req, res) => {
-  res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
-});
+// // req.isAuthenticated is provided from the auth router
+// app.get('/', (req, res) => {
+//   res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
+// });
 
 
-app.get('/profile', requiresAuth(), (req, res) => {
-    console.log(req.oidc.user)
-    console.log(req)
-    res.send(JSON.stringify(req.oidc.user));
-});
+// app.get('/profile', requiresAuth(), (req, res) => {
+//     console.log(req.oidc.user)
+//     console.log(req)
+//     res.send(JSON.stringify(req.oidc.user));
+// });
 
 
 

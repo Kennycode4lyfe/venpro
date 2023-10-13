@@ -1,5 +1,7 @@
 const express = require("express");
-const pharmaController = require("../Controllers/pharmaController");
+const pharmaController = require("../Controllers/pharmaController")
+const productController = require("../Controllers/productController");
+
 const passport = require('passport');
 const pharmaRouter = express.Router();
 
@@ -18,10 +20,11 @@ pharmaRouter.put('/', async (req, res, next) => passport.authenticate('jwt', (er
 
 pharmaRouter.get('/',pharmaController.getAllPharmacies)
 
-pharmaRouter.post('/product', async (req, res, next) => passport.authenticate('jwt', (err, token) => {
-    pharmaController.addProducts(req, res, token)
-})(req, res, next))
+// pharmaRouter.post('/product', async (req, res, next) => passport.authenticate('jwt', (err, token) => {
+//     pharmaController.addProducts(req, res, token)
+// })(req, res, next))
 
+pharmaRouter.post('/product', productController.createProduct)
 pharmaRouter.get('/product', async (req, res, next) => passport.authenticate('jwt', (err, token) => {
     pharmaController.getProducts(req, res, token)
 })(req, res, next))

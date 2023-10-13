@@ -17,7 +17,7 @@ function Product(sequelize,DataTypes){
     },
     drug_class:{
         type:DataTypes.CHAR(36),
-        default: DataTypes.UUIDV4,
+        
         foreignKey: true,        
         references:{
             model: 'drug_class',

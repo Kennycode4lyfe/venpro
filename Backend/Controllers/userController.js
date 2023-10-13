@@ -16,26 +16,22 @@ api_secret:process.env.CLOUDINARY_API_SECRET
 
 
 
-async function signup(req, res, next) {
+async function signup(req, res) {
   const ref = ranString.generate(10);
   const user = await User.findOne({where:{username: req.user.username}})
+  console.log(req.user)
   const passedUserDetails = req.user
 
   try {
    const updatedUser = await User.update({ref:ref},{where:{
      username:user.username 
     }})
-    
-    // const userWallet = await wallet.create({user_id:updatedUser.id})
-  //  console.log(userWallet)
     passedUserDetails.ref = updateUser.ref
     delete passedUserDetails.password
     console.log(passedUserDetails)
     res.status(201).json(passedUserDetails);
-    next();
   } catch (err) {
     console.log(err);
-    next(err);
   }
 
 }
@@ -54,7 +50,7 @@ async function signup(req, res, next) {
           async (error) => {
               if (error) return next(error);
 
-              const body = { _id: user._id, username: user.username };
+              const body = { _id: user.id, username: user.username };
               //You store the id and username in the payload of the JWT. 
               // You then sign the token with a secret or key (JWT_SECRET), and send back the token to the user.
               // DO NOT STORE PASSWORDS IN THE JWT!

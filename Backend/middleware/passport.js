@@ -26,42 +26,51 @@ passport.use(
 );
 
 
-// This middleware saves the information provided by the user to the database,
-// and then sends the user information to the next middleware if successful.
+// This middleware authenticates the user based on the username and password provided.
+// If the user is found, it sends the user information to the next middleware.
 // Otherwise, it reports an error.
+
 
 passport.use(
     'signup',
     new localStrategy(
-        {
-            usernameField: 'username',
-            passwordField: 'password',
-            passReqToCallback: true
-        },
-        async (req,username,password,done) => {
-            try {
-                console.log(req.body)
-               let first_name = req.body.first_name
-              let  last_name = req.body.last_name
-              let  email = req.body.email
-                const user = await UserModel.create({ first_name,last_name, username, password,email }
-            ).then(async(user)=>{
-                console.log(user)
-                await walletModel.create({user_id:user.id})
-                await cartModel.create({user_id:user.id})
-            })
-                return done(null, user, { message: 'User created successfully'});
-            } catch (error) {
-                console.log(error)
-                done(error);
-            }
+      {
+        usernameField: 'username',
+        passwordField: 'password',
+        passReqToCallback: true,
+      },
+      async (req, username, password, done) => {
+        try {
+          // Extract user data from the request body
+          const { first_name, last_name, email } = req.body;
+  
+          // Create a new user using UserModel.create
+          const user = await UserModel.create({
+            first_name,
+            last_name,
+            username,
+            password,
+            email,
+          });
+  
+          // Log the created user
+          console.log('User created:', user);
+  
+          // Create related records (e.g., wallet and cart) for the user
+          await walletModel.create({ user_id: user.id });
+          await cartModel.create({ user_id: user.id });
+  
+          // Return the created user and a success message
+          return done(null, user, { message: 'User created successfully' });
+        } catch (error) {
+          console.error('Error during signup:', error);
+          return done(error);
         }
+      }
     )
-);
+  );
+ 
 
-// This middleware authenticates the user based on the username and password provided.
-// If the user is found, it sends the user information to the next middleware.
-// Otherwise, it reports an error.
 passport.use(
     'login',
     new localStrategy(

@@ -38,8 +38,8 @@ db.pharmProducts = require('./pharmaProducts')(sequelize,DataTypes)
 
 
 // User and Pharmacy: One-to-One
-db.users.hasOne(db.pharmacy);
-db.pharmacy.belongsTo(db.users);
+db.users.hasOne(db.pharmacy,{foreignKey:'user_id'});
+db.pharmacy.belongsTo(db.users,{foreignKey:'user_id'});
 
 // Product and Drug Class: One-to-Many
 db.drugClass.hasMany(db.products);
@@ -80,7 +80,7 @@ db.products.belongsToMany(db.Cart, { through: 'Cart_product' });
 
 // sync all models
 // force: false will not drop the table if it already exists
-db.sequelize.sync({ force: false })
+db.sequelize.sync({ force: true })
     .then(() => {
         console.log('Database & tables synced');
     }).catch(err => {
