@@ -111,48 +111,93 @@ async function buyProducts(req, res, token) {
 
 
 
-async function transferCartToOrder(req,res,token) {
-    const userId = token._id
-    const userCart =  await cart.findOne({where:{user_id:userId}})
+// async function transferCartToOrder(req,res,token) {
+//     const userId = token._id
+//     const userCart =  await cart.findOne({where:{user_id:userId}})
     
-    if (!userCart) {
-        throw new Errors("User's cart not found.");
-    }
+//     if (!userCart) {
+//         throw new Errors("User's cart not found.");
+//     }
 
-    const orderPayLoad = req.body
-    try {
+//     const orderPayLoad = req.body
+//     try {
         
-        const userOrder = await orders.create({ user_id: userId, cart_id: userCart.id,total_price:userCart.total });
+//         const userOrder = await orders.create({ user_id: userId, cart_id: userCart.id,total_price:userCart.total });
 
 
     
 
-        // Find all products in the user's cart.
+//         // Find all products in the user's cart.
+//         const cartProducts = await Cart_products.findAll({ where: { CartId: userCart.id } });
+
+//         // Iterate through the products in the cart and create records in the order.
+//         for (const cartProduct of cartProducts) {
+//             const { ProductId, quantity } = cartProduct;
+//             console.log(cartProduct)
+//             console.log(userOrder.id)
+//             // Create a new record in the OrderProducts table.
+//             await OrderProducts.create({
+//                 OrderId: userOrder.id,
+//                 ProductId,
+//                 quantity,
+//             });
+
+           
+//         }
+
+        
+//     } catch (error) {
+//         console.log({ error });
+//         throw new Error("Failed to transfer products from cart to order.");
+//     }
+// }
+
+async function transferCartToOrder(req, res, token) {
+    const userId = token._id;
+
+    try {
+        // Find the user's cart
+        const userCart = await cart.findOne({ where: { user_id: userId } });
+        
+        if (!userCart) {
+            return res.status(404).send({ error: "User's cart not found." });
+        }
+
+        // Create an order based on the cart
+        const userOrder = await orders.create({
+            user_id: userId,
+            cart_id: userCart.id,
+            total_price: userCart.total
+        });
+
+        // Find all products in the user's cart
         const cartProducts = await Cart_products.findAll({ where: { CartId: userCart.id } });
 
-        // Iterate through the products in the cart and create records in the order.
+        // Iterate through the products in the cart and create records in the order
         for (const cartProduct of cartProducts) {
             const { ProductId, quantity } = cartProduct;
-            console.log(cartProduct)
-            console.log(userOrder.id)
-            // Create a new record in the OrderProducts table.
+
+            // Create a new record in the OrderProducts table
             await OrderProducts.create({
                 OrderId: userOrder.id,
                 ProductId,
                 quantity,
             });
-
-           
         }
 
-        
+        // Optionally, you can clear the user's cart after transferring products.
+        // await Cart_products.destroy({ where: { CartId: userCart.id } });
+
+        // Optionally, you can update the user's cart total if needed.
+        // For example: await userCart.update({ total: 0 });
+
+        // Return a success response
+        return res.status(201).json({ message: "Products transferred from cart to order successfully" });
     } catch (error) {
         console.log({ error });
-        throw new Error("Failed to transfer products from cart to order.");
+        return res.status(500).json({ error: "Failed to transfer products from cart to order." });
     }
 }
-
-
 
 
 module.exports = {buyProducts,
