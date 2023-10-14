@@ -39,6 +39,9 @@ function Product(sequelize,DataTypes){
     quantity:{
         type:DataTypes.INTEGER
     },
+    reserved_quantity:{
+        type:DataTypes.INTEGER
+    },
 
     },
     {

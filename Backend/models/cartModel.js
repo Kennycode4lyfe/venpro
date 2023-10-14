@@ -13,7 +13,8 @@ const Cart = sequelize.define('Cart',
             defaultValue:false
         },
         total:{
-            type:DataTypes.INTEGER
+            type:DataTypes.INTEGER,
+            defaultValue:0
         },
         user_id:{
             type:DataTypes.CHAR(36),
@@ -36,21 +37,19 @@ return Cart
 
     const Cart_Products = sequelize.define('Cart_product',
         {
-            product_id:{
+            ProductId:{
                 type: DataTypes.CHAR(36),
                 references:{
                     model:'Products',
                     key:'id'
                 }
             },
-            purchased:{
-                type:DataTypes.BOOLEAN,
-                defaultValue:false
+        
+            quantity:{
+                type:DataTypes.INTEGER,
+                defaultValue:0
             },
-            total:{
-                type:DataTypes.INTEGER
-            },
-            cart_id:{
+            CartId:{
                 type:DataTypes.CHAR(36),
                 references:{
                     model:'Carts',

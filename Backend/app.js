@@ -4,6 +4,8 @@ const { requiresAuth } = require('express-openid-connect');
 const bodyParser = require('body-parser')
 const userRouter = require('./Routes/userRoute')
 const pharmRouter = require('./Routes/pharmaRoute')
+const storeRouter =require('./Routes/storeRoute')
+const checkOutRouter =require('./Routes/checkOutRoute')
 // const middleWare = require('./auth')
 const path = require('path')
 const PORT = process.env.PORT || 3000
@@ -25,6 +27,9 @@ app.use(express.static(path.join(__dirname,'public')));
 // app.use(middleWare)
 app.use('/user',userRouter)
 app.use('/pharmacy',pharmRouter)
+app.use('/cart',storeRouter)
+app.use('/checkout',checkOutRouter)
+
 
 
 

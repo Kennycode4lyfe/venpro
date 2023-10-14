@@ -2,31 +2,21 @@ const db = require("../models/index");
 const User = db.users;
 const drug_class = db.drugClass
 const product = db.products
+const pharmacy = db.pharmacy
+const pharm_product = db.pharmProducts
 
 
-// async function createProduct(req,res){
-// const productPayload = req.body
-// console.log(productPayload)
-// await product.create(productPayload)
-// .then(async(product)=>{
-//     drug_class.findOrCreate(
-//         {where:{name: productPayload.drugClass }
-// })
-// .then(([drugClass])=>{
-// product.setDrug_class(drugClass.id)
-// })
-// }).catch(err =>{
-//     console.log("Error", err)
-// })
-// }
-
-async function createProduct(req, res) {
-    const productPayload = req.body;
-    console.log(productPayload);
-  
+  async function createProduct(req, res, token) {
     try {
-      const createdProduct = await product.create(productPayload);
+      console.log(token);
+      const productPayload = req.body;
+      const userPharmacy = await pharmacy.findOne({ where: { user_id: token._id } });
   
+      if (!userPharmacy) {
+        return res.status(401).send({ message: 'Unauthorized' });
+      }
+  
+      const createdProduct = await product.create(productPayload);
       const [drugClass] = await drug_class.findOrCreate({
         where: { name: productPayload.drugClass },
       });
@@ -34,12 +24,21 @@ async function createProduct(req, res) {
       // Associate the product with the drug class
       await createdProduct.setDrug_class(drugClass);
   
+      // Create an entry in the junction table
+      const pharmProduct = await pharm_product.create({
+        ProductId: createdProduct.id,
+        PharmacyId: userPharmacy.id,
+      });
+  
       res.status(201).json(createdProduct);
     } catch (err) {
-      console.log("Error", err);
+      console.error("Error creating product:", err);
       res.status(500).json({ error: "Product creation failed" });
     }
   }
+
+  
+
 
   async function deleteProduct(req, res) {
     const productId = req.params.productId; // Assuming you get the product ID from the request parameters

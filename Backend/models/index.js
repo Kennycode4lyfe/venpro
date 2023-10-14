@@ -30,11 +30,11 @@ db.drugClass = require('./productModel').drugClass(sequelize, DataTypes)
 db.products = require('./productModel').Product(sequelize, DataTypes);
 db.cartProducts = require('./cartModel').cartProducts(sequelize,DataTypes)
 db.Cart = require('./cartModel').Cart(sequelize,DataTypes)
-db.orders = require('./orderModel')(sequelize,DataTypes)
+db.orders = require('./orderModel').orders(sequelize,DataTypes)
 db.wallet = require('./walletModel').Wallet(sequelize,DataTypes)
 db.walletTransaction = require('./walletModel').walletTransaction(sequelize,DataTypes)
 db.pharmProducts = require('./pharmaProducts')(sequelize,DataTypes)
-
+db.orderProducts = require('./orderModel').orderProducts(sequelize,DataTypes)
 
 
 // User and Pharmacy: One-to-One
@@ -66,8 +66,8 @@ db.users.hasMany(db.orders);
 db.orders.belongsTo(db.users);
 
 // Order and Products: Many-to-Many
-db.orders.belongsToMany(db.products, { through: 'OrderProducts' });
-db.products.belongsToMany(db.orders, { through: 'OrderProducts' });
+db.orders.belongsToMany(db.products, { through: 'Order_Product' });
+db.products.belongsToMany(db.orders, { through: 'Order_Product' });
 
 // Product and Pharmacy: Many-to-Many
 db.products.belongsToMany(db.pharmacy, { through: 'Pharm_products' });

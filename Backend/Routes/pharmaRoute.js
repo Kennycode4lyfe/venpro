@@ -24,10 +24,14 @@ pharmaRouter.get('/',pharmaController.getAllPharmacies)
 //     pharmaController.addProducts(req, res, token)
 // })(req, res, next))
 
-pharmaRouter.post('/product', productController.createProduct)
-pharmaRouter.get('/product', async (req, res, next) => passport.authenticate('jwt', (err, token) => {
-    pharmaController.getProducts(req, res, token)
+// pharmaRouter.post('/product', productController.createProduct)
+pharmaRouter.post('/product', async (req, res, next) => passport.authenticate('jwt', (err, token) => {
+    productController.createProduct(req, res, token)
 })(req, res, next))
+
+// pharmaRouter.get('/product', async (req, res, next) => passport.authenticate('jwt', (err, token) => {
+//     pharmaController.getProducts(req, res, token)
+// })(req, res, next))
 
 pharmaRouter.delete('/product', async (req, res, next) => passport.authenticate('jwt', (err, token) => {
     pharmaController.deleteProducts(req, res, token)
