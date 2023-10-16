@@ -6,6 +6,7 @@ const userRouter = require('./Routes/userRoute')
 const pharmRouter = require('./Routes/pharmaRoute')
 const storeRouter =require('./Routes/storeRoute')
 const checkOutRouter =require('./Routes/checkOutRoute')
+const paymentRouter = require('./Routes/paymentRoute')
 // const middleWare = require('./auth')
 const path = require('path')
 const PORT = process.env.PORT || 3000
@@ -29,7 +30,7 @@ app.use('/user',userRouter)
 app.use('/pharmacy',pharmRouter)
 app.use('/cart',storeRouter)
 app.use('/checkout',checkOutRouter)
-
+app.use('/payment',paymentRouter)
 
 
 

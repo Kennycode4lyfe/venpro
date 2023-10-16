@@ -1,19 +1,24 @@
 const axios = require('axios'); // For making HTTP requests to Paystack
-const { cartProducts } = require('../models');
-const { Cart } = require('../models/cartModel');
-// For generating unique transaction references
-
+const { cartProducts, orders, users } = require('../models');
+const Cart = require('../models/index').Cart;
 require("dotenv").config()
+
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
+
 
 
 async function initializePayment(req, res, token) {
     try {
-        const user_id = token.user_id;
-        const userEmail = token.email;
+        const user_id = token._id;
+        const user = await users.findOne({ where: { id: user_id } });
 
-        // Retrieve the order for the user with status 'processing'
-        const userOrder = await orders.findOne({ where: { user_id: user_id, status: 'processing' } });
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        const userOrder = await orders.findOne({
+            where: { user_id, status: 'processing' }
+        });
 
         if (!userOrder) {
             return res.status(404).json({ error: "Order not found or not in 'processing' status" });
@@ -23,13 +28,12 @@ async function initializePayment(req, res, token) {
         const orderAmount = userOrder.total_price * 100; // Amount in kobo
 
         // Replace with your actual Paystack secret key
-        
+        const PAYSTACK_SECRET_KEY = PAYSTACK_SECRET_KEY;
 
-        // Make a POST request to initialize the payment
         const paystackResponse = await axios.post(
             'https://api.paystack.co/transaction/initialize',
             {
-                email: userEmail,
+                email: user.email,
                 amount: orderAmount,
                 callback_url: 'https://yourdomain.com/paystack/callback',
                 reference: orderTrackingNumber,
@@ -41,8 +45,6 @@ async function initializePayment(req, res, token) {
             }
         );
 
-        // Send the Paystack response to the frontend
-
         res.json(paystackResponse.data);
     } catch (error) {
         console.error(error);
@@ -51,14 +53,12 @@ async function initializePayment(req, res, token) {
 }
 
 
-async function verifyPayment(req, res) {
-    try {
-        const user_id = token.user_id;
-        const userEmail = token.email;
-        const userCart  = Cart.findOne({where:{user_id:user_id}})
 
-        // Replace with your actual Paystack secret key
-        const PAYSTACK_SECRET_KEY = 'your_secret_key';
+
+async function verifyPayment(req, res, token) {
+    try {
+        const user_id = token._id;
+        const userEmail = token.email;
 
         // Retrieve the reference from the query parameters
         const reference = req.query.reference;
@@ -74,14 +74,18 @@ async function verifyPayment(req, res) {
             },
         });
 
-        const verificationData = verificationResponse.data;
+        const verificationData = verificationResponse.data.data;
 
         if (verificationData.status === 'success') {
             // Payment is successful, you can update your order status or take other actions
-            // Example: Update the order status to 'completed'
-            // const order = await Order.findOneAndUpdate({ reference: reference }, { status: 'completed' });
-            await cartProducts.destroy({where:{CartId:userCart.id}})
-            await userCart.update({total:0})
+            // Example: Update the user's cart and cart products
+            const userCart = await Cart.findOne({ where: { user_id: user_id } });
+
+            if (userCart) {
+                await cartProducts.destroy({ where: { CartId: userCart.id } });
+                await userCart.update({ total: 0 });
+            }
+
             return res.json(verificationData);
         } else {
             // Payment verification failed, handle accordingly
@@ -92,7 +96,6 @@ async function verifyPayment(req, res) {
         return res.status(500).json({ error: 'Failed to verify payment' });
     }
 }
-
 
 
 module.exports = {initializePayment,
