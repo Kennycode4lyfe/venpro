@@ -28,7 +28,6 @@ async function initializePayment(req, res, token) {
         const orderAmount = userOrder.total_price * 100; // Amount in kobo
 
         // Replace with your actual Paystack secret key
-        const PAYSTACK_SECRET_KEY = PAYSTACK_SECRET_KEY;
 
         const paystackResponse = await axios.post(
             'https://api.paystack.co/transaction/initialize',

@@ -7,6 +7,7 @@ const pharmRouter = require('./Routes/pharmaRoute')
 const storeRouter =require('./Routes/storeRoute')
 const checkOutRouter =require('./Routes/checkOutRoute')
 const paymentRouter = require('./Routes/paymentRoute')
+const adminRouter = require('./Routes/adminRoute')
 // const middleWare = require('./auth')
 const path = require('path')
 const PORT = process.env.PORT || 3000
@@ -27,6 +28,7 @@ app.use(express.static(path.join(__dirname,'public')));
 
 // app.use(middleWare)
 app.use('/user',userRouter)
+app.use('/admin',adminRouter)
 app.use('/pharmacy',pharmRouter)
 app.use('/cart',storeRouter)
 app.use('/checkout',checkOutRouter)
@@ -52,13 +54,13 @@ app.get('/home', (req, res) => {
  res.send('hello')
 })
 
-app.use((err,req,res,next)=>{
-  // if(err.parent.errno && err.parent.errno===1062 &&){
-  //  return res.send('duplicate entry')
-  // }
+// app.use((err,req,res,next)=>{
+//   // if(err.parent.errno && err.parent.errno===1062 &&){
+//   //  return res.send('duplicate entry')
+//   // }
 
-  res.status(500).send('something broke')
-})
+//   res.status(500).send('something broke')
+// })
 app.listen(PORT,()=>{
     console.log(`app listening on port ${PORT}`)
 })

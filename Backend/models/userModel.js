@@ -31,6 +31,11 @@ username:{
     allowNull:false,
     unique:true
 },
+role:{
+    type:DataTypes.STRING,
+    Enum:['user','admin'],
+    defaultValue:'user'
+},
 password:{
 type:DataTypes.STRING,
 allowNull:false,
