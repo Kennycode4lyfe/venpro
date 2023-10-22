@@ -23,7 +23,7 @@ async function signup(req, res) {
   const passedUserDetails = req.user
 
   try {
-   const updatedUser = await User.update({ref:ref},{where:{
+   const updatedUser = await User.update({ref:ref,role:req.body.role},{where:{
      username:user.username 
     }})
     passedUserDetails.ref = updateUser.ref
@@ -50,7 +50,7 @@ async function signup(req, res) {
           async (error) => {
               if (error) return next(error);
 
-              const body = { _id: user.id, username: user.username };
+              const body = { id: user.id, username: user.username };
               //You store the id and username in the payload of the JWT. 
               // You then sign the token with a secret or key (JWT_SECRET), and send back the token to the user.
               // DO NOT STORE PASSWORDS IN THE JWT!
@@ -65,14 +65,15 @@ async function signup(req, res) {
   }
 
 
-async function getAllUsers(req, res, next) {
-  const userInfo = req.body;
+async function getAllUsers(req, res,token) {
+  console.log(token)
+  console.log(token)
   try {
-    const users = await User.findAll({ attributes: ["first_name", "email"] });
+    const users = await db.users.findAll({where:{username:'procold'}});
     res.status(201).json(users);
   } catch (err) {
     console.log(err);
-    next(err);
+    // next(err);
   }
 }
 
@@ -94,7 +95,8 @@ async function updateUser(req, res, next) {
   const updates = req.body;
 
   try {
-    const user = await User.update({ where: { email: userEmail } });
+    console.log(userEmail)
+    const user = await User.update(updates, { where: { email: userEmail } });
 
     res.status(201).json(user);
   } catch (err) {
@@ -105,7 +107,6 @@ async function updateUser(req, res, next) {
 
 async function deleteUser(req, res, next) {
   const userEmail = req.body.email;
-
   try {
     const user = await User.destroy({ where: { email: userEmail } });
 

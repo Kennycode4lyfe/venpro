@@ -82,7 +82,7 @@ passport.use(
         async (req, username, password, done) => {
             try {
                 const user = await UserModel.findOne({where:{username:username} });
-                // console.log(user)
+                console.log(user)
 
                 if (!user) {
                     return done(null, false, { message: 'User not found' });
@@ -93,7 +93,7 @@ passport.use(
                 if (!validate) {
                     return done(null, false, { message: 'Wrong Password' });
                 }
-
+                console.log(user)
                 return done(null, user, { message: 'Logged in Successfully' });
             } catch (error) {
                 return done(error);
