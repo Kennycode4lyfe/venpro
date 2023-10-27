@@ -58,23 +58,23 @@ const userController = require("../Controllers/userController")
         res.status(401).json({ message: 'Unauthorized to continue' });
       }
     }
-    async function adminLogin(req, res, user) {
+    async function adminLogin(req, res, {user}) {
       executeIfAdmin(req, res, user, userController.login);
     }
   
-    async function getAllUsers(req, res, user) {
+    async function getAllUsers(req, res, {user}) {
       executeIfAdmin(req, res, user, userController.getAllUsers);
     }
   
-    async function getUserById(req, res, user) {
+    async function getUserById(req, res, {user}) {
       executeIfAdmin(req, res, user, userController.getUserById);
     }
   
-    async function updateUser(req, res, user) {
+    async function updateUser(req, res, {user}) {
       executeIfAdmin(req, res, user, userController.updateUser);
     }
   
-    async function deleteUser(req, res, user) {
+    async function deleteUser(req, res, {user}) {
       executeIfAdmin(req, res, user, userController.deleteUser);
     }
   

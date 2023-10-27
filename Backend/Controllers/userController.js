@@ -3,6 +3,7 @@ const ranString = require("randomstring");
 const fs = require("fs")
 const cloudinary = require('cloudinary').v2
 const User = db.users;
+const bcrypt = require('bcrypt')
 const wallet = db.wallet
 const jwt = require('jsonwebtoken');
 require('dotenv').config
@@ -18,6 +19,7 @@ api_secret:process.env.CLOUDINARY_API_SECRET
 
 async function signup(req, res) {
   const ref = ranString.generate(10);
+  console.log(req.user)
   const user = await User.findOne({where:{username: req.user.username}})
   console.log(req.user)
   const passedUserDetails = req.user
@@ -36,7 +38,9 @@ async function signup(req, res) {
 
 }
 
+
   async function login(req, res, {err,user,info}) {
+    console.log(req.user)
     try {
       if (err) {
           return next(err);
@@ -65,11 +69,21 @@ async function signup(req, res) {
   }
 
 
+  async function getUser(req, res,token) {
+    try {
+      const userDetails = await db.users.findOne({where:{username:token.username},attributes:{exclude:['password']}});
+      res.status(201).json(userDetails);
+    } catch (err) {
+      console.log(err);
+      // next(err);
+    }
+  }
+
 async function getAllUsers(req, res,token) {
   console.log(token)
   console.log(token)
   try {
-    const users = await db.users.findAll({where:{username:'procold'}});
+    const users = await db.users.findAll();
     res.status(201).json(users);
   } catch (err) {
     console.log(err);
@@ -90,13 +104,13 @@ async function getUserById(req, res, next) {
   }
 }
 
-async function updateUser(req, res, next) {
-  const userEmail = req.body.email;
+async function updateUser(req, res,token) {
+  
   const updates = req.body;
 
   try {
-    console.log(userEmail)
-    const user = await User.update(updates, { where: { email: userEmail } });
+    console.log(token.username)    
+    const user = await User.update(updates, { where: { username: token.username } });
 
     res.status(201).json(user);
   } catch (err) {
@@ -136,22 +150,40 @@ async function verifyUser(req, res, next) {
   }
 }
 
-async function changePassword(req, res, next) {
-    const userEmail = req.body.email;
-    try {
-      const user = await User.findOne(
-        { where: { email: userEmail } }
-      );
-      if(user.email_verified===false){
-        return res.send('Email not verified')
+
+async function changePassword(req, res, token) {
+  const username = token.username; // Assuming the username is stored in the token
+  const newPassword = req.body.new_password;
+  const confirmPassword = req.body.confirm_password;
+
+  try {
+      // Find the user by their username
+      const user = await User.findOne({ where: { username: username } });
+
+      if (!user) {
+          return res.status(404).send('User does not exist');
       }
-      
-      res.redirect("/home");
-    } catch (err) {
-      console.log(err);
-      next(err);
-    }
+
+      if (newPassword !== confirmPassword) {
+          return res.status(400).send('Passwords do not match');
+      }
+
+      // Hash the new password before updating it in the database
+      const newHashedPassword = await bcrypt.hash(newPassword, 10);
+
+      // Update the user's password
+      await user.update({ password: newHashedPassword });
+
+      return res.status(200).send('Password changed successfully');
+  } catch (err) {
+      console.error(err);
+      return res.status(500).send('An error occurred while changing the password');
   }
+}
+
+
+
+
 
   async function uploadImage(req, res, token) {
     const userProfile = token.username
@@ -185,6 +217,7 @@ module.exports = {
   signup,
   login,
   getAllUsers,
+  getUser,
   getUserById,
   updateUser,
   deleteUser,
