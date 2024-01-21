@@ -3,12 +3,13 @@ const pharmaModel = require("../models/index").pharmacy;
 const productModel = require("../models/index").products;
 const pharmProductModel = require("../models/index").pharmProducts;
 
-async function createPharmacy(req, res, token) {
+
+async function createPharmacy(req, res, {user}) {
   const pharmaPayload = req.body;
-  console.log(token)
-  const user = token.username;
+  const username = user.username;
   try {
-    const userDetails = await userModel.findOne({ where: { username: user } });
+    console.log(user)
+    const userDetails = await userModel.findOne({ where: { username: username } });
     const userId = userDetails.id;
     console.log(userId);
     const pharmacy = await pharmaModel.create({
@@ -22,7 +23,8 @@ async function createPharmacy(req, res, token) {
   }
 }
 
-async function getAllPharmacies(req, res) {
+
+async function getAllPharmacies(req, res,) {
   try {
     const allPharmacies = await pharmaModel.findAll({ include: userModel });
     res.status(200).json(allPharmacies);
@@ -31,13 +33,13 @@ async function getAllPharmacies(req, res) {
   }
 }
 
-async function updatePharmacy(req, res, token) {
-  const user = token.username;
-  const userDetails = await userModel.findOne({ where: { username: user } });
+async function updatePharmacy(req, res, {user}) {
+  const username = user.username;
+  const userDetails = await userModel.findOne({ where: { username: username } });
   try {
     const updatedDetails = req.body;
     const updatedPharmacy = await pharmaModel.update(updatedDetails, {
-      where: { user_id: userDetails.id },
+    where: { user_id: userDetails.id },
     });
     res.status(200).json(updatedPharmacy);
   } catch (err) {
@@ -58,75 +60,77 @@ async function deletePharmacy(req, res, token) {
   }
 }
 
-async function addProducts(req, res, token) {
-  const user = token.username;
-  const userDetails = await userModel.findOne({ where: { username: user } });
-  try {
-    const productDetails = req.body;
 
-    const userPharmacy = await pharmaModel.findOne({
-      where: { user_id: userDetails.id },
-    });
+// async function addProducts(req, res, {user}) {
+//   const username = user.username;
+//   const userDetails = await userModel.findOne({ where: { username: username } });
+//   console.log(userDetails.id)
+//   try {
+//     const productDetails = req.body;
 
-    const pharmproduct = await productModel.create(productDetails);
-    await userPharmacy.addProduct(pharmproduct.id);
-    res.status(200).json(pharmproduct);
-  } catch (err) {
-    console.log(err);
-  }
-}
+//     const userPharmacy = await pharmaModel.findOne({
+//       where: { user_id: userDetails.id },
+//     });
+
+//     const pharmproduct = await productModel.create(productDetails);
+//     await userPharmacy.addProduct(pharmproduct.id);
+//     res.status(200).json(pharmproduct);
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
 
 
 
-async function getProducts(req, res, token) {
-  const user = token.username;
-  const userDetails = await userModel.findOne({ where: { username: user } });
-  try {
-    const userPharmacyProducts = await pharmaModel.findOne({
-      where: { user_id: userDetails.id },
-      include: {
-        model: productModel
-      },
-    });
+// async function getProducts(req, res, token) {
+//   const user = token.username;
+//   const userDetails = await userModel.findOne({ where: { username: user } });
+//   try {
+//     const userPharmacyProducts = await pharmaModel.findOne({
+//       where: { user_id: userDetails.id },
+//       include: {
+//         model: productModel
+//       },
+//     });
 
-    const products = userPharmacyProducts.Products;
-    console.log(products);
+//     const products = userPharmacyProducts.Products;
+//     console.log(products);
   
-    res.status(200).json({ Products:products});
-  } catch (err) {
-    console.log(err);
-  }
-}
+//     res.status(200).json({ Products:products});
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
 
 
-async function deleteProducts(req, res, token) {
-  const user = token.username;
-  const deleteQuery = req.query;
-  const userDetails = await userModel.findOne({ where: { username: user } });
-  try {
-    const userPharmacyProducts = await pharmaModel.findOne({
-      where: { user_id: userDetails.id },
-      include: {
-        model: productModel,
-        where: deleteQuery
-      },
-    });
-    const productId = userPharmacyProducts.Products[0].id;
-    console.log(productId);
-    await productModel.destroy({ where: { id: productId } })
-    await pharmProductModel.destroy({ where: { product_id: productId } });
-    res.status(200).json({ message: "product deleted" });
-  } catch (err) {
-    console.log(err);
-  }
-}
+// async function deleteProducts(req, res, token) {
+//   const user = token.username;
+//   const deleteQuery = req.query;
+//   const userDetails = await userModel.findOne({ where: { username: user } });
+//   try {
+//     const userPharmacyProducts = await pharmaModel.findOne({
+//       where: { user_id: userDetails.id },
+//       include: {
+//         model: productModel,
+//         where: deleteQuery
+//       },
+//     });
+//     const productId = userPharmacyProducts.Products[0].id;
+//     console.log(productId);
+//     await productModel.destroy({ where: { id: productId } })
+//     await pharmProductModel.destroy({ where: { product_id: productId } });
+//     res.status(200).json({ message: "product deleted" });
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
 
 module.exports = {
   createPharmacy,
   getAllPharmacies,
   updatePharmacy,
   deletePharmacy,
-  addProducts,
-  getProducts,
-  deleteProducts,
+  // addProducts,
+  // getProducts,
+  // deleteProducts,
 };
